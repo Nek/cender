@@ -1,0 +1,14 @@
+#+title: Cender
+
+* Abstract
+'Send'-ing Clojure to Blender in a REPL-friendly way.
+
+* Questions
+** what is send_a etc?
+
+* Problems
+** cannot work with sets?
+
+* Ideas
+** make a more refined undo stack
+'push' an undo step after/before every REPL call?

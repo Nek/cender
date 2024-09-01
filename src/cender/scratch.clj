@@ -1,17 +1,6 @@
 (ns cender.scratch
-  (:import  (org.zerorpc ZRpcClient)
-            (java.io ByteArrayInputStream ByteArrayOutputStream))
-  (:require [cognitect.transit :as transit]))
+  [:require [cender.v1.client :refer [connect-client]]])
 
 (defn -main [& args]
-  (let [client (ZRpcClient.)
-        out (ByteArrayOutputStream. 4096)
-        writer (transit/writer out :json)]
-    (.connect client "tcp://127.0.0.1:10000")
-    (transit/write writer [#{1 2 3}])
-    (let [args (.toString out)
-          s (.call client "send_set" (object-array [args]))]
-      (println "SENT")
-      (let [in (ByteArrayInputStream. (.toByteArray out))
-            reader (transit/reader in :json)]
-        (apply println (transit/read reader))))))
+  (let [client (connect-client "tcp://127.0.0.1:10000")]
+    (println (.call client "echo" [#{1 2 3}]))))

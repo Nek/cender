@@ -1,5 +1,14 @@
 {:mvn/repos {"clojars" {:url "https://repo.clojars.org/"}
-             "central" {:url "https://repo1.maven.org/maven2/"}}
- :paths     ["src" "resources"]
+             "central" {:url "https://repo1.maven.org/maven2/"} 
+             "msgpack" {:url "https://msgpack.org/maven2/"}}
+ :paths     ["src" "resources" "java/zerorpc/src/main/java" "java/zerorpc/build/classes/java/main"]
  :deps      {org.clojure/clojure      {:mvn/version "1.11.2"}
-             necessary-evil/necessary-evil {:mvn/version "2.0.2"}}}
+             necessary-evil/necessary-evil {:mvn/version "2.0.2"}
+             aleph/aleph {:mvn/version "0.8.1"}
+             com.cognitect/transit-clj {:mvn/version "1.0.333"}
+             org.msgpack/msgpack-rpc {:mvn/version "0.6.1-devel"}
+             org.msgpack/msgpack {:mvn/version "0.6.12"}
+             org.msgpack/msgpack-core {:mvn/version "0.9.3"}
+             com.google.guava/guava {:mvn/version "31.1-jre"}
+             io.djy/ezzmq {:mvn/version "0.8.1"}
+             org.zeromq/jeromq {:mvn/version "0.5.3"}}}

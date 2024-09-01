@@ -1,16 +1,17 @@
 (ns cender.scratch
-  (:require
-   [cender.v1.api :as c]))
+  (:import  (org.zerorpc ZRpcClient)
+            (java.io ByteArrayInputStream ByteArrayOutputStream))
+  (:require [cognitect.transit :as transit]))
 
-(comment
-  (c/undo)
-  (c/move "Cube", [0.0 10.0 0.0])
-
-  (! (format "bpy.data.objects['%s'].select_set(state=True)" "Camera"))
-
-  (c/select "Cube")
-  (c/deselect)
-
-  (c/delete "Cube")
-  (c/object-names)
-  (c/! "move_object('Camera', 0.0,0.0,10.0)"))
+(defn -main [& args]
+  (let [client (ZRpcClient.)
+        out (ByteArrayOutputStream. 4096)
+        writer (transit/writer out :json)]
+    (.connect client "tcp://127.0.0.1:10000")
+    (transit/write writer [#{1 2 3}])
+    (let [args (.toString out)
+          s (.call client "send_set" (object-array [args]))]
+      (println "SENT")
+      (let [in (ByteArrayInputStream. (.toByteArray out))
+            reader (transit/reader in :json)]
+        (apply println (transit/read reader))))))

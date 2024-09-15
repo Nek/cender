@@ -3,4 +3,4 @@
 
 (defn -main [& args]
   (let [client (connect-client "tcp://127.0.0.1:10000")]
-    (println (.call client "echo" [#{1 2 3}]))))
+   (print (.call client ["move_object" "Cube" 0 0 0]))))

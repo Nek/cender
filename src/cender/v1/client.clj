@@ -3,6 +3,8 @@
             (java.io ByteArrayInputStream ByteArrayOutputStream))
   (:require [cognitect.transit :as transit]))
 
+(defrecord Vector [vals])
+
 (defprotocol Connector
   "Something that can connect to a server."
   (connect
@@ -27,13 +29,20 @@
   Caller
   (call [_ args]
     (let [out (ByteArrayOutputStream. 4096)
-          writer (transit/writer out :json)]
-      (transit/write writer args) 
-      (let [in (ByteArrayInputStream. (.getBytes (.call client "call_fn" (object-array [(.toString out)]))))
-            reader (transit/reader in :json)]
+          writer (transit/writer out :json {:handlers {Vector (transit/write-handler "blender-vector" (fn [o] (:vals o)))}})]
+      (transit/write writer args)
+      (let [res (.call client "call_fn" (object-array [(.toString out)]))
+            in (ByteArrayInputStream. (.getBytes res))
+            reader (transit/reader in :json {:handlers {"blender-vector" (transit/read-handler (fn [v] (Vector. v)))}})]
         (transit/read reader)))))
 
+(def client (atom nil))
+
 (defn connect-client [addr]
-  (let [client (->RpcClient (ZRpcClient.) addr)]
-    (.connect client)
-    client))
+  (let [cl (->RpcClient (ZRpcClient.) addr)]
+    (.connect cl)
+    (reset! client cl)
+    cl))
+
+(defn call-fn [name args]
+  (.call @client (cons name args)))

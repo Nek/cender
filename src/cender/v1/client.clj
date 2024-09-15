@@ -46,3 +46,21 @@
 
 (defn call-fn [name args]
   (.call @client (cons name args)))
+
+(defn eval-code [code]
+  (call-fn "eval_code" [code]))
+
+
+(defn import-ns [ns]
+  (call-fn "import_ns" [ns]))
+
+
+(defn set-var [var val]
+  (call-fn "set_var" [var val]))
+
+
+(defn get-var [var]
+  (call-fn "get_var" [var]))
+
+(defn set-obj-prop [obj prop val]
+  (call-fn "set_obj_prop" [obj prop val]))
